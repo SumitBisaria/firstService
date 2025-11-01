@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +40,7 @@ public class FirstServiceController {
      */
     @GetMapping("/fetch")
     public ResponseEntity<List<String>> getData() {
+        Instant start = Instant.now();
         List<CompletableFuture<String>> futures = new ArrayList<>();
         IntStream.range(0, 10)
                 .forEach(range -> futures.add(fetchDataInParallel(range)
@@ -57,7 +60,8 @@ public class FirstServiceController {
             System.err.println("Exception received " + e.getMessage());
         }
 
-        final List<String> response = futures.stream().map(data -> data.getNow("Timeout")).toList();
+        final List<String> response = futures.stream().map(data -> data.getNow("TimeOut")).toList();
+        System.out.println("Total time " + Duration.between(start, Instant.now()).toSeconds());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

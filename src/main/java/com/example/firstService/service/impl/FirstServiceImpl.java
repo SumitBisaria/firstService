@@ -6,6 +6,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Service implementation class is used to provide definition of each abstraction.
@@ -33,13 +35,15 @@ public class FirstServiceImpl implements FirstService {
         Instant start = Instant.now();
         try {
             response = restTemplate.getForObject("http://localhost:8081/api/getRecords", String.class);
+
+            System.out.println("Response received "+ response);
         } catch (Exception e) {
             System.err.println("Exception received.");
             throw new RuntimeException("");
         }
         Instant end = Instant.now();
-        long seconds = Duration.between(start, end).toSeconds();
-        System.out.println("Total time taken for calling service B for range " + range + " is " + seconds + " seconds");
+        long millis = Duration.between(start, end).toMillis();
+        System.out.println("Total time taken for calling service B for range " + range + " is " + millis + " millis");
         return response;
     }
 }
